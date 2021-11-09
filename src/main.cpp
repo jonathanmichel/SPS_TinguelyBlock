@@ -1,9 +1,9 @@
-#include <Arduino.h>
+/*#include <Arduino.h>
 #include <SoftwareSerial.h>
 
-/*
+
   Receiver code
-/*/
+//
 const byte txPin = 2;
 const byte rxPin = 3;
 
