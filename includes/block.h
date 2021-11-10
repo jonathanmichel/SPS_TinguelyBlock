@@ -16,10 +16,13 @@
 #define c_else
 //*/
 
-#define c_forever
+#define h_on_start
+
+#define BLOCK_ID_SIZE 7	// bits
 
 void block_setup();
 void block_loop();
+void sendId();
 
 #ifdef c_end
 	#define BLOCK_ID 0x0
