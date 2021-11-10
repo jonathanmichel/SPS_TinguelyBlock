@@ -25,8 +25,8 @@ byte getHexAscii(char hex) {
 
 // Send raw data as byte
 void sendByte(byte data) {
-	Serial.println("Send data: ");
-    Serial.print(data);
+    Serial.write(data);
+    Serial.println("");
     // Do not use Serial.print() because it converts 
     // data to its representation as characters
     softwareSerial.write(data);
