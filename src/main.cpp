@@ -1,28 +1,48 @@
 #include <Arduino.h>
 
+//
+
 #include "../includes/block.h"
 #include "../includes/com.h"
 
-//
+byte rxBuffer[RX_BUFFER_SIZE];  // rx buffer for code received from other blocks
+int rxCtn;      // incremented to fill rxBuffer
+int binaryCtn;  // decremented to count data to receive
 
 void setup() {
-	Serial.begin(9600);             // initialize serial communication at 9600 bits per second:
+	// Initialize serial communication for debug
+	Serial.begin(9600);
+	// Initialize software serial for UART communication
 	serialInit();
-	block_setup();
+
 	Serial.print("Id: ");
 	Serial.print(BLOCK_ID);
-	Serial.print(" (0b");
-	Serial.print(BLOCK_ID_BIN);
-	Serial.print("), size: ");
+	Serial.print(", size: ");
 	Serial.print(BLOCK_SIZE);
 	Serial.print(", type: ");
 	Serial.println(BLOCK_TYPE);
+
+	if(blockInitGlobal() == false) {
+		Serial.println("/!\\ Unable to initialize block");
+		exit(0);
+	}
 }
 
 void loop() {
+	char parameters[PARAMETERS_MAX_SIZE];
+	byte parametersLength = updateParameters(parameters);
+
+	// 1 byte for block id + parameters length
+	byte frameLength = 1 + parametersLength;
+
+	// Frame [SOH][frame length][... data padded ...][EOT]
 	sendHeader();
-	sendId();
+	sendByte(frameLength);
+	sendByte(BLOCK_ID);
+	sendData(parameters, parametersLength);
+	//sendChildren();
 	sendTail();
+
 	delay(1000);
 }
 

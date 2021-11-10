@@ -8,7 +8,6 @@ const byte rxPin = 3;
 
 SoftwareSerial softwareSerial(rxPin, txPin);
 
-
 void serialInit() {
     softwareSerial.begin(9600);              // initialize UART with baud rate of 9600
 }
@@ -25,8 +24,7 @@ byte getHexAscii(char hex) {
 
 // Send raw data as byte
 void sendByte(byte data) {
-    Serial.write(data);
-    Serial.println("");
+    Serial.println(data, HEX);
     // Do not use Serial.print() because it converts 
     // data to its representation as characters
     softwareSerial.write(data);
@@ -43,4 +41,17 @@ void sendHeader() {
 
 void sendTail() {
     sendByte(END_TRANSMISSION);
+}
+
+void sendData(char* array, int size) {
+    Serial.print("(Send data ");
+    Serial.print(size);
+    Serial.println(")");
+    for(int i = 0; i < size; i++) {
+        sendByte(array[i]);
+    }
+}
+
+void sendChildren() {
+
 }
