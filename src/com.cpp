@@ -1,5 +1,7 @@
 #include "../includes/com.h"
 
+#include "../includes/debug.h"
+
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
@@ -31,7 +33,7 @@ byte getHexAscii(char hex) {
 
 // Send raw data as byte
 void sendByte(byte data) {
-    Serial.println(data, HEX);
+    DEBUG_PRINTLN(data, HEX);
     // Do not use Serial.print() because it converts 
     // data to its representation as characters
     softwareSerial.write(data);
@@ -51,9 +53,9 @@ void sendTail() {
 }
 
 void sendData(byte* array, int size) {
-    Serial.print("-- Send raw data ");
-    Serial.print(size);
-    Serial.println(" byte(s):");
+    DEBUG_PRINT("-- Send raw data ");
+    DEBUG_PRINT(size);
+    DEBUG_PRINTLN(" byte(s):");
     for(int i = 0; i < size; i++) {
         sendByte(array[i]);
     }
@@ -65,7 +67,7 @@ int processRx() {
         // no data
     } else if (res == -1) {
         // serial unavailable
-        Serial.print("Serial unavailable");
+        FATAL_PRINTLN("Serial unavailable");
     } else {
         byte receivedData = softwareSerial.read();
 
@@ -77,19 +79,19 @@ int processRx() {
             binaryCtn--;
 
             // Print receivedData in hex with 2 digits
-            Serial.print("Rx: ");
-            Serial.print(receivedData < 16 ? "0" : "");
-            Serial.println(receivedData, HEX);
+            DEBUG_PRINT("Rx: ");
+            DEBUG_PRINT(receivedData < 16 ? "0" : "");
+            DEBUG_PRINTLN(receivedData, HEX);
 
             if(rxCtn == RX_BUFFER_SIZE) {
-                Serial.println("rxBuffer full");
+                ERROR_PRINTLN("rxBuffer full");
                 binaryCtn = 0;
                 // @todo possible bug if EOT is not checked below !
             }
 
             if(binaryCtn == 0) {
-                Serial.print("Full frame received: ");
-                Serial.println(rxCtn);
+                DEBUG_PRINT("Full frame received: ");
+                DEBUG_PRINTLN(rxCtn);
 
                 return rxCtn;
 
@@ -108,18 +110,18 @@ int processRx() {
         } else if (binaryCtn == -1) { // current byte is supposed to be frame length (0-255)
             binaryCtn = receivedData;
             if (binaryCtn > RX_BUFFER_SIZE) {
-                Serial.print("Frame is too big for current rxBuffer");
+                ERROR_PRINTLN("Frame is too big for current rxBuffer");
                 binaryCtn = 0;
             } else {
-                Serial.print("Start reading frame: ");
-                Serial.println(binaryCtn);
+                DEBUG_PRINT("Start reading frame: ");
+                DEBUG_PRINTLN(binaryCtn);
             }
         } else if (receivedData == START_HEAD) {  // If we are not receiving new data, we wait SOH
             // Once SOH is received, the next byte indicates the data length
             // By changing binaryCtn, we activate binary receiving. Next step will be to read frame length
             binaryCtn = -1; 
             rxCtn = 0;
-            Serial.println("Begin of frame detected");
+            // Serial.println("Begin of frame detected");
         }
     }
 
@@ -128,7 +130,7 @@ int processRx() {
 
 boolean copyRxData(byte* destArray, int size) {
     if(size > RX_BUFFER_SIZE) {
-        Serial.println("Unable to copy rx data, not enough data in RxBuffer");
+        ERROR_PRINTLN("Unable to copy rx data, not enough data in RxBuffer");
     } else {
         for(int i = 0; i < size; i ++) {
             destArray[i] = rxBuffer[i];

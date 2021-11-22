@@ -4,6 +4,7 @@
 
 #include "../includes/block.h"
 #include "../includes/com.h"
+#include "../includes/debug.h"
 
 #define TX_INTERVAL 1000	// ms, period to send frame
 
@@ -14,22 +15,20 @@ unsigned long lastMs;
 byte childrenData[CHILDREN_DATA_SIZE];
 int childrenDataSize;
 
-
 void setup() {
-	// Initialize serial communication for debug
-	Serial.begin(9600);
+	debugInit();
 	// Initialize software serial for UART communication
 	comInit();
 
-	Serial.print("Id: ");
-	Serial.print(BLOCK_ID);
-	Serial.print(", size: ");
-	Serial.print(BLOCK_SIZE);
-	Serial.print(", type: ");
-	Serial.println(BLOCK_TYPE);
+	INFO_PRINT("Id: 0x");
+	INFO_PRINT(BLOCK_ID, HEX);
+	INFO_PRINT(", size: ");
+	INFO_PRINT(BLOCK_SIZE);
+	INFO_PRINT(", type: ");
+	INFO_PRINTLN(BLOCK_TYPE);
 
 	if(blockInitGlobal() == false) {
-		Serial.println("/!\\ Unable to initialize block");
+		FATAL_PRINTLN("/!\\ Unable to initialize block");
 		exit(0);
 	}
 
@@ -54,7 +53,7 @@ void loop() {
 				childrenDataSize = dataRead;
 			}
 		} else  {
-			Serial.println("ChildrenData array too small to store children code");
+			ERROR_PRINTLN("ChildrenData array too small to store children code");
 		}
 	}
 	
@@ -75,12 +74,17 @@ void loop() {
 		// Data from next blocs will be sent
 		if (childrenDataSize > 0) {
 			sendData(childrenData, childrenDataSize);
+			INFO_PRINT("Child is ");
+			INFO_PRINT(childrenDataSize);
+			INFO_PRINTLN(" byte(s) long");
+		} else {
+			INFO_PRINTLN("Current block has no child");
 		}
 		childrenDataSize = 0;
 
 		sendTail();
 
-		Serial.println("-----");
+		DEBUG_PRINTLN("-----");
 
 		lastMs = millis();
 	} 
