@@ -17,7 +17,7 @@ c = color [3 bits]
 	5: red pulse
 	6: orange pulse
 */
-byte updateParameters(char* parametersArray) {
+byte updateParameters(byte* parametersArray) {
 	// @todo Get color from arduino pin
 	byte color = 5;
 

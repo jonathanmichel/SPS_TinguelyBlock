@@ -5,7 +5,6 @@
 
 // Change here to programm RX or TX arduino
 // Comment to use main code in main.cpp
-
 // #define RX // RX or TX
 
 // COM3 (Tx) or COM4 (Rx)

@@ -25,7 +25,7 @@ boolean blockInitGlobal();
 // Each of the above functions have to be implemented 
 // in block specific code
 boolean blockInit();
-byte updateParameters(char* parametersArray);
+byte updateParameters(byte* parametersArray);
 
 #ifdef c_end
 	#define BLOCK_ID 0x0

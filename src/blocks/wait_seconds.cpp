@@ -13,7 +13,7 @@ s = seconds [8 bits]
 	…
 	255"
 */
-byte updateParameters(char* parametersArray) {
+byte updateParameters(byte* parametersArray) {
 	// @todo Get seconds from arduino pin
 	byte seconds = 0x5D;
 

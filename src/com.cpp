@@ -8,8 +8,15 @@ const byte rxPin = 3;
 
 SoftwareSerial softwareSerial(rxPin, txPin);
 
-void serialInit() {
+byte rxBuffer[RX_BUFFER_SIZE];  // rx buffer for code received from other blocks
+int rxCtn;      // incremented to fill childrenData
+int binaryCtn;  // decremented to count data to receive
+
+void comInit() {
     softwareSerial.begin(9600);              // initialize UART with baud rate of 9600
+    // Initialize counters
+    rxCtn = 0;
+    binaryCtn = 0;
 }
 
 byte getHexAscii(char hex) {
@@ -43,15 +50,90 @@ void sendTail() {
     sendByte(END_TRANSMISSION);
 }
 
-void sendData(char* array, int size) {
-    Serial.print("(Send data ");
+void sendData(byte* array, int size) {
+    Serial.print("-- Send raw data ");
     Serial.print(size);
-    Serial.println(")");
+    Serial.println(" byte(s):");
     for(int i = 0; i < size; i++) {
         sendByte(array[i]);
     }
 }
 
-void sendChildren() {
+int processRx() {
+    int res = softwareSerial.available();
+    if(res == 0) {
+        // no data
+    } else if (res == -1) {
+        // serial unavailable
+        Serial.print("Serial unavailable");
+    } else {
+        byte receivedData = softwareSerial.read();
 
+        // If binaryCtn is not 0, we are currently receving data ...
+        if(binaryCtn > 0) { 
+            // ... so we fill the array
+            rxBuffer[rxCtn++] = receivedData;
+            // .. and decrement binaryCtn 
+            binaryCtn--;
+
+            // Print receivedData in hex with 2 digits
+            Serial.print("Rx: ");
+            Serial.print(receivedData < 16 ? "0" : "");
+            Serial.println(receivedData, HEX);
+
+            if(rxCtn == RX_BUFFER_SIZE) {
+                Serial.println("rxBuffer full");
+                binaryCtn = 0;
+                // @todo possible bug if EOT is not checked below !
+            }
+
+            if(binaryCtn == 0) {
+                Serial.print("Full frame received: ");
+                Serial.println(rxCtn);
+
+                return rxCtn;
+
+                /*/ @Todo - Read and check EOT
+                if(receivedData == END_TRANSMISSION) {
+                    // ... and save the received frame
+                    Serial.print("Full frame received: ");
+                    Serial.println(rxCtn);
+                } else {
+                    // ... or discard it otherwise
+                    Serial.println("Incorrect frame received");
+                    binaryCtn = 0;
+                }
+                //*/
+            }
+        } else if (binaryCtn == -1) { // current byte is supposed to be frame length (0-255)
+            binaryCtn = receivedData;
+            if (binaryCtn > RX_BUFFER_SIZE) {
+                Serial.print("Frame is too big for current rxBuffer");
+                binaryCtn = 0;
+            } else {
+                Serial.print("Start reading frame: ");
+                Serial.println(binaryCtn);
+            }
+        } else if (receivedData == START_HEAD) {  // If we are not receiving new data, we wait SOH
+            // Once SOH is received, the next byte indicates the data length
+            // By changing binaryCtn, we activate binary receiving. Next step will be to read frame length
+            binaryCtn = -1; 
+            rxCtn = 0;
+            Serial.println("Begin of frame detected");
+        }
+    }
+
+    return 0;
+}
+
+boolean copyRxData(byte* destArray, int size) {
+    if(size > RX_BUFFER_SIZE) {
+        Serial.println("Unable to copy rx data, not enough data in RxBuffer");
+    } else {
+        for(int i = 0; i < size; i ++) {
+            destArray[i] = rxBuffer[i];
+        }
+        return true;
+    }
+    return false;
 }

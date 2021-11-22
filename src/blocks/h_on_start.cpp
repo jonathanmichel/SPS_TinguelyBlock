@@ -6,7 +6,7 @@ boolean blockInit() {
 	return true;
 }
 
-byte updateParameters(char* parametersArray) {
+byte updateParameters(byte* parametersArray) {
 	// h_on_start has no parameters
 	return 0;
 }
