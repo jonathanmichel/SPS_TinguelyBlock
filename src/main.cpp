@@ -64,7 +64,6 @@ void loop() {
 
 		// 1 byte for block id + parameters length
 		byte frameLength = 1 + parametersLength + childrenDataSize;
-
 		// Frame [SOH][frame length][... data padded ...][... children data ...][EOT]
 		sendHeader();
 		sendByte(frameLength);

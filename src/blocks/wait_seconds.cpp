@@ -1,8 +1,11 @@
 #include "../includes/block.h"
 
+#include "../includes/debug.h"
+
 #ifdef wait_seconds
 
 boolean blockInit() {
+	INFO_PRINTLN("wait_seconds block init");
 	return true;
 }
 

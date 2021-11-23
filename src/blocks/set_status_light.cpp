@@ -1,8 +1,11 @@
 #include "../includes/block.h"
 
+#include "../includes/debug.h"
+
 #ifdef set_status_light
 
 boolean blockInit() {
+	INFO_PRINTLN("set_status_light block init");
 	return true;
 }
 
@@ -26,6 +29,8 @@ byte updateParameters(byte* parametersArray) {
 	// add zero padding for 5 remaining bits
 	parametersArray[0] = parametersArray[0] & 0b11100000;
 
+	INFO_PRINT("Read color ");
+	INFO_PRINTLN(color);
 
 	return 1; // one parameter (color), uses 1 byte with padding
 }
