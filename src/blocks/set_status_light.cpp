@@ -6,8 +6,8 @@
 
 boolean blockInit() {
 	INFO_PRINTLN("set_status_light block init");
-	// D11 provides voltage to the three position switch
-	// D10 and D12 read it state
+	// D10 and D12 provide VCC and GND
+	// D11 read value from the switch
 	// Switch connection: middle pin -> D11, left and right pins -> D10 and D12
 	pinMode(10, OUTPUT);
   	pinMode(11, INPUT);
