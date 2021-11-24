@@ -71,11 +71,11 @@ int processRx() {
     } else {
         byte receivedData = softwareSerial.read();
 
-        // If binaryCtn is not 0, we are currently receving data ...
+        // If binaryCtn is not 0, we are currently receiving data ...
         if(binaryCtn > 0) { 
             // ... so we fill the array
             rxBuffer[rxCtn++] = receivedData;
-            // .. and decrement binaryCtn 
+            // ... and decrement binaryCtn 
             binaryCtn--;
 
             // Print receivedData in hex with 2 digits
