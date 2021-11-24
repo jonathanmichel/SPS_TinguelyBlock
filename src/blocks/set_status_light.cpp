@@ -22,7 +22,7 @@ c = color [3 bits]
 */
 byte updateParameters(byte* parametersArray) {
 	// @todo Get color from arduino pin
-	byte color = 5;
+	byte color = 3;
 
 	// send only 3 LSB
 	parametersArray[0] = color << 5;
