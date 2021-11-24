@@ -59,6 +59,8 @@ void loop() {
 	
 	// Send frame each second
 	if (millis() - lastMs > TX_INTERVAL) {
+		lastMs = millis();
+
 		byte parameters[PARAMETERS_MAX_SIZE];
 		byte parametersLength = updateParameters(parameters);
 
@@ -85,7 +87,6 @@ void loop() {
 
 		DEBUG_PRINTLN("-----");
 
-		lastMs = millis();
 	} 
 }
 

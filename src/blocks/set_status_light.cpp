@@ -6,6 +6,16 @@
 
 boolean blockInit() {
 	INFO_PRINTLN("set_status_light block init");
+	// D11 provides voltage to the three position switch
+	// D10 and D12 read it state
+	// Switch connection: middle pin -> D11, left and right pins -> D10 and D12
+	pinMode(10, OUTPUT);
+  	pinMode(11, INPUT);
+	pinMode(12, OUTPUT);
+
+	digitalWrite(10, LOW);
+	digitalWrite(12, HIGH);
+
 	return true;
 }
 
@@ -21,8 +31,10 @@ c = color [3 bits]
 	6: orange pulse
 */
 byte updateParameters(byte* parametersArray) {
+	int val = digitalRead(11);
+
 	// @todo Get color from arduino pin
-	byte color = 3;
+	byte color = val;
 
 	// send only 3 LSB
 	parametersArray[0] = color << 5;
