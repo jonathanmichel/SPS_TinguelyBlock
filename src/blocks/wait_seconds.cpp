@@ -17,6 +17,7 @@ boolean blockInit() {
 
 	digitalWrite(10, LOW);
 	digitalWrite(12, HIGH);
+
 	return true;
 }
 
@@ -27,9 +28,7 @@ s = seconds [8 bits]
 	…
 	255"
 */
-byte updateParameters(byte* parametersArray) {
-	int maxValue = 1023;	// 10 btis ADC
-
+byte readParameters(byte* parametersArray) {
 	int val = analogRead(A0);  	// Read analog value
 	// 10 bits ADC - Max value is 1023
 	// shit 5 times (/32) to have a range between 0 and 32 seconds

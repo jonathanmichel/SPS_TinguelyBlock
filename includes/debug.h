@@ -30,8 +30,9 @@
 #define ERROR_PRINT(...) Serial.print(__VA_ARGS__); 
 #define ERROR_PRINTLN(...) Serial.println(__VA_ARGS__); 
 
-#define FATAL_PRINT(...) Serial.print(__VA_ARGS__); Serial.flush(); exit(0);
-#define FATAL_PRINTLN(...) Serial.println(__VA_ARGS__); Serial.flush(); exit(0)
+// ! FATAL_PRINT does not exit code. This allows to print values before calling FATAL_PRINTLN
+#define FATAL_PRINT(...) Serial.print(__VA_ARGS__); 
+#define FATAL_PRINTLN(...) Serial.println(__VA_ARGS__); Serial.println("[FATAL] Exit code"); Serial.flush(); exit(0)
 
 void debugInit();
 

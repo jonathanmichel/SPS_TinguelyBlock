@@ -9,3 +9,20 @@ boolean blockInitGlobal() {
     }
     return blockInit();
 }
+
+byte updateParameters(byte* parametersArray) {
+    byte parameterSize = readParameters(parametersArray);
+
+    if((unsigned int)BLOCK_SIZE / 8 != parameterSize) {
+        FATAL_PRINT("Check readParameters() implementation for block 0x");
+        FATAL_PRINT(BLOCK_ID, HEX);
+        FATAL_PRINT(". It does not correspond to BLOCK_SIZE definition in block.h. ");
+        FATAL_PRINT(parameterSize);
+        FATAL_PRINT(" byte(s) returned by readParameter() for ")
+        FATAL_PRINT(BLOCK_SIZE);
+        FATAL_PRINTLN(" bit(s) required for parameters according to BLOCK_SIZE.");
+    }
+
+    return parameterSize;
+}
+

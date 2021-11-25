@@ -30,7 +30,7 @@ c = color [3 bits]
 	5: red pulse
 	6: orange pulse
 */
-byte updateParameters(byte* parametersArray) {
+byte readParameters(byte* parametersArray) {
 	int val = digitalRead(11);
 
 	// @todo Get color from arduino pin

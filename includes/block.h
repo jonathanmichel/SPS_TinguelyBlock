@@ -16,16 +16,18 @@
 #define c_else
 //*/
 
-#define h_on_start
+#define wait_seconds
 
 #define PARAMETERS_MAX_SIZE 15 	// bits
 
 boolean blockInitGlobal();
+byte updateParameters(byte* parametersArray);
 
 // Each of the above functions have to be implemented 
 // in block specific code
 boolean blockInit();
-byte updateParameters(byte* parametersArray);
+byte readParameters(byte* parametersArray);
+
 
 #ifdef c_end
 	#define BLOCK_ID 0x0
