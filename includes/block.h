@@ -16,9 +16,13 @@
 #define c_else
 //*/
 
-#define wait_seconds
+#define motors_run_direction
 
 #define PARAMETERS_MAX_SIZE 15 	// bits
+
+enum Port { A = 0, B, C, D };
+enum Direction { clockwise = 0, counterclockwise };
+enum Unit { rotations = 0, degrees, seconds };
 
 boolean blockInitGlobal();
 byte updateParameters(byte* parametersArray);

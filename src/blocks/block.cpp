@@ -13,7 +13,12 @@ boolean blockInitGlobal() {
 byte updateParameters(byte* parametersArray) {
     byte parameterSize = readParameters(parametersArray);
 
-    if((unsigned int)BLOCK_SIZE / 8 != parameterSize) {
+    byte parametersBytesRequired = 0;
+    if(BLOCK_SIZE > 0) {
+        parametersBytesRequired = (unsigned int)((BLOCK_SIZE - 1)/8) + 1;
+    }
+
+    if(parametersBytesRequired != parameterSize) {
         FATAL_PRINT("Check readParameters() implementation for block 0x");
         FATAL_PRINT(BLOCK_ID, HEX);
         FATAL_PRINT(". It does not correspond to BLOCK_SIZE definition in block.h. ");

@@ -24,9 +24,7 @@ boolean blockInit() {
 /* Parameters
 1 byte: [ssssssss]
 s = seconds [8 bits]
-	"0
-	…
-	255"
+	0-255
 */
 byte readParameters(byte* parametersArray) {
 	int val = analogRead(A0);  	// Read analog value
@@ -42,7 +40,7 @@ byte readParameters(byte* parametersArray) {
 	parametersArray[0] = seconds;
 	// no padding required
 	
-	return 1; // one parameter (color), uses 1 byte with padding
+	return 1; // parameters use 1 byte
 }
 
 #endif

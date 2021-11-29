@@ -22,18 +22,18 @@ boolean blockInit() {
 /* Parameters
 1 byte: [ccc-----]
 c = color [3 bits]
-	0: off
-	1: green
-	2: red
-	3: orange
-	4: green pulse
-	5: red pulse
-	6: orange pulse
+	000: off
+	001: green
+	010: red
+	011: orange
+	100: green pulse
+	101: red pulse
+	110: orange pulse
+	111: <not supported>
 */
 byte readParameters(byte* parametersArray) {
 	int val = digitalRead(11);
 
-	// @todo Get color from arduino pin
 	byte color = val;
 
 	// send only 3 LSB
@@ -44,7 +44,7 @@ byte readParameters(byte* parametersArray) {
 	INFO_PRINT("Read color ");
 	INFO_PRINTLN(color);
 
-	return 1; // one parameter (color), uses 1 byte with padding
+	return 1; // parameters use 1 byte
 }
 
 #endif
