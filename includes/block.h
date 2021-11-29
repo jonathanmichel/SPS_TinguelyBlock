@@ -16,7 +16,7 @@
 #define c_else
 //*/
 
-#define motors_start_speed
+#define wait_touch
 
 #define PARAMETERS_MAX_SIZE 15 	// bits
 
@@ -24,6 +24,7 @@ enum MotorsPorts { A = 0, B, C, D };
 enum SensorsPorts { INPUT_1 = 0, INPUT_2, INPUT_3, INPUT_4 };
 enum Direction { clockwise = 0, counterclockwise };
 enum Unit { rotations = 0, degrees, seconds };
+enum State { pressed = 0, released };
 
 boolean blockInitGlobal();
 byte updateParameters(byte* parametersArray);

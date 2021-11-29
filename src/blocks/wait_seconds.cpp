@@ -1,5 +1,4 @@
 #include "../includes/block.h"
-
 #include "../includes/debug.h"
 
 #ifdef wait_seconds
