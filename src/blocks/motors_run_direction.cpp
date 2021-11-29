@@ -27,7 +27,7 @@ v = value [8 bits]
 	0-255
 */
 byte readParameters(byte* parametersArray) {
-	byte port = Port::A;
+	byte port = MotorsPorts::A;
 	byte direction = Direction::clockwise;
 	byte unit = Unit::degrees;
 	byte value = 135;
@@ -50,7 +50,7 @@ byte readParameters(byte* parametersArray) {
 	INFO_PRINT(unit);
 	INFO_PRINT(", value:");
 	INFO_PRINTLN(value);
-	
+
 	return 2; // parameters use 2 bytes
 }
 #endif

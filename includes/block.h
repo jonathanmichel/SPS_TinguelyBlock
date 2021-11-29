@@ -20,7 +20,8 @@
 
 #define PARAMETERS_MAX_SIZE 15 	// bits
 
-enum Port { A = 0, B, C, D };
+enum MotorsPorts { A = 0, B, C, D };
+enum SensorsPorts { INPUT_1 = 0, INPUT_2, INPUT_3, INPUT_4 };
 enum Direction { clockwise = 0, counterclockwise };
 enum Unit { rotations = 0, degrees, seconds };
 

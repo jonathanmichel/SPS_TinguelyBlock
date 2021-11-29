@@ -22,7 +22,7 @@ v = value [8 bits]
 	0-255
 */
 byte readParameters(byte* parametersArray) {
-	byte port = Port::C;
+	byte port = MotorsPorts::C;
 	byte direction = Direction::counterclockwise;
 	byte value = 69;
 

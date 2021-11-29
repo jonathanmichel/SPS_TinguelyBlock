@@ -17,7 +17,7 @@ p = port [2 bits]
 	11: D
 */
 byte readParameters(byte* parametersArray) {
-	byte port = Port::A;
+	byte port = MotorsPorts::A;
 
 	parametersArray[0] = port & 0b11;;
 
