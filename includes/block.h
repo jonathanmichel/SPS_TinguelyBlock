@@ -16,7 +16,7 @@
 #define c_else
 //*/
 
-#define motors_run_direction
+#define motors_start_speed
 
 #define PARAMETERS_MAX_SIZE 15 	// bits
 

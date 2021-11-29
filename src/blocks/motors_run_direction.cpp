@@ -50,11 +50,7 @@ byte readParameters(byte* parametersArray) {
 	INFO_PRINT(unit);
 	INFO_PRINT(", value:");
 	INFO_PRINTLN(value);
-
-	INFO_PRINT(b0, BIN);
-	INFO_PRINT(" ");
-	INFO_PRINTLN(b1, BIN);
-
+	
 	return 2; // parameters use 2 bytes
 }
 #endif
