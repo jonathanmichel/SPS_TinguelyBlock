@@ -16,7 +16,7 @@
 #define c_else
 //*/
 
-#define wait_touch
+#define c_repeat
 
 #define PARAMETERS_MAX_SIZE 15 	// bits
 
@@ -86,8 +86,14 @@ byte readParameters(byte* parametersArray);
 #ifdef c_forever
 	#define BLOCK_ID 0x38
 	#define BLOCK_SIZE 0
-	#define BLOCK_TYPE "cap"
+	#define BLOCK_TYPE "c"
 #endif // c_forever
+
+#ifdef c_repeat
+	#define BLOCK_ID 0x3B
+	#define BLOCK_SIZE 8
+	#define BLOCK_TYPE "c"
+#endif // c_repeat
 
 #ifdef c_else
 	#define BLOCK_ID 0x7F
