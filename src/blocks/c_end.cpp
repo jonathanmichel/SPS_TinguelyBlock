@@ -1,14 +1,16 @@
 #include "../includes/block.h"
+#include "../includes/debug.h"
 
 #ifdef c_end
 
-void block_setup() {
-	Serial.println("Je suis c_end");
+boolean blockInit() {
+	INFO_PRINTLN("c_end block init");
+	return true;
 }
 
-void block_loop() {
-	Serial.println("Looping c_end");
-	delay(1000);
+byte readParameters(byte* parametersArray) {
+	// c_end has no parameters
+	return 0; // use 0 byte
 }
 
 #endif

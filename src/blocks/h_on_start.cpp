@@ -1,4 +1,5 @@
 #include "../includes/block.h"
+#include "../includes/debug.h"
 
 #ifdef h_on_start
 

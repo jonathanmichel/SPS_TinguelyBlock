@@ -1,14 +1,16 @@
 #include "../includes/block.h"
+#include "../includes/debug.h"
 
 #ifdef c_forever
 
-void block_setup() {
-	Serial.println("Je suis c_forever");
+boolean blockInit() {
+	INFO_PRINTLN("c_forever block init");
+	return true;
 }
 
-void block_loop() {
-	Serial.println("Looping c_forever");
-	delay(1000);
+byte readParameters(byte* parametersArray) {
+	// c_forever has no parameters
+	return 0; // use 0 byte
 }
 
 #endif
