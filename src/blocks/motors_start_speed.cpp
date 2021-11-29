@@ -9,7 +9,7 @@ boolean blockInit() {
 }
 
 /* Parameters
-2 byte: [ppdvvvvv][vvv-----]
+2 byte: [ppdsssss][ss------]
 p = port [2 bits]
 	00: A
 	01: B
@@ -18,19 +18,19 @@ p = port [2 bits]
 d = direction [1 bit]
 	0: clockwise
 	1: counterclockwise
-v = value [8 bits]
-	0-255
+s = speed [7 bits]
+	0-100
 */
 byte readParameters(byte* parametersArray) {
 	byte port = MotorsPorts::C;
 	byte direction = Direction::counterclockwise;
-	byte value = 69;
+	byte speed = 69;
 
 	port &= 0b11;
 	direction &= 0b1;
 
-	byte b0 = (port << 6) + (direction << 5) + (value >> 3);
-	byte b1 = (value << 5) & 0b11100000;
+	byte b0 = (port << 6) + (direction << 5) + (speed >> 3);
+	byte b1 = (speed << 6) & 0b11000000;
 
 	parametersArray[0] = b0;
 	parametersArray[1] = b1;
@@ -39,8 +39,8 @@ byte readParameters(byte* parametersArray) {
 	INFO_PRINT(port);
 	INFO_PRINT(", direction: ");
 	INFO_PRINT(direction);
-	INFO_PRINT(", value:");
-	INFO_PRINTLN(value);
+	INFO_PRINT(", speed:");
+	INFO_PRINTLN(speed);
 	
 	return 2; // parameters use 2 bytes
 }
