@@ -29,7 +29,7 @@ v = value [8 bits]
 byte readParameters(byte* parametersArray) {
 	byte port = MotorsPorts::A;
 	byte direction = Direction::clockwise;
-	byte unit = Unit::degrees;
+	byte unit = MotorsUnit::degrees;
 	byte value = 135;
 
 	port &= 0b11;
