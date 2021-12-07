@@ -18,10 +18,9 @@
 #define c_repeat_until
 #define c_if
 #define c_else
-#define b_touch
 //*/
 
-#define wait_until
+#define c_if
 
 #define PARAMETERS_MAX_SIZE 4 	// bytes
 
@@ -32,6 +31,7 @@ enum State { pressed = 0, released };
 enum Operator { equal = 0, greater, less };
 enum MotorsUnit { rotations = 0, degrees, seconds };
 enum DistanceUnit { cm = 0, inches };
+enum Sign { positive = 0, negative };
 
 boolean blockInitGlobal();
 byte updateParameters(byte* parametersArray);
