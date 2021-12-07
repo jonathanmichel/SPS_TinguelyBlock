@@ -8,7 +8,7 @@
 #define b_distance
 //*/
 
-#define b_distance
+#define b_touch
 
 #ifdef b_touch
 	#define BOOLEAN_ID 0x43

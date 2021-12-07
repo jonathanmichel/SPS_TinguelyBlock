@@ -11,15 +11,17 @@
 #define set_status_light
 #define wait_seconds
 #define wait_touch
+#define wait_until
 #define h_on_start
 #define c_forever
 #define c_repeat
+#define c_repeat_until
 #define c_if
 #define c_else
 #define b_touch
 //*/
 
-#define c_end
+#define wait_until
 
 #define PARAMETERS_MAX_SIZE 4 	// bytes
 
@@ -89,6 +91,12 @@ byte readParameters(byte* parametersArray);
 	#define BLOCK_TYPE "stack"
 #endif // wait_touch
 
+#ifdef wait_until
+	#define BLOCK_ID 0x21
+	#define BLOCK_SIZE VARIABLE_SIZE
+	#define BLOCK_TYPE "stack"
+#endif // wait_until
+
 #ifdef h_on_start
 	#define BLOCK_ID 0x2E
 	#define BLOCK_SIZE 0
@@ -106,6 +114,12 @@ byte readParameters(byte* parametersArray);
 	#define BLOCK_SIZE 8
 	#define BLOCK_TYPE "c"
 #endif // c_repeat
+
+#ifdef c_repeat_until
+	#define BLOCK_ID 0x3C
+	#define BLOCK_SIZE VARIABLE_SIZE
+	#define BLOCK_TYPE "c"
+#endif // c_repeat_until
 
 #ifdef c_if
 	#define BLOCK_ID 0x39
