@@ -33,6 +33,7 @@ byte getHexAscii(char hex) {
 
 // Send raw data as byte
 void sendByte(byte data) {
+    INFO_PRINT("0x");
     INFO_PRINTLN(data, HEX);
     // Do not use Serial.print() because it converts 
     // data to its representation as characters

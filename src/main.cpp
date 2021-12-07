@@ -1,7 +1,5 @@
 #include <Arduino.h>
 
-//
-
 #include "../includes/block.h"
 #include "../includes/com.h"
 #include "../includes/debug.h"
@@ -89,5 +87,3 @@ void loop() {
 
 	} 
 }
-
-//*/

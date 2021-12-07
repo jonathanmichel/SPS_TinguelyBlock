@@ -13,12 +13,15 @@
 #define wait_touch
 #define h_on_start
 #define c_forever
+#define c_repeat
+#define c_if
 #define c_else
+#define b_touch
 //*/
 
-#define c_repeat
+#define c_end
 
-#define PARAMETERS_MAX_SIZE 16 	// bits
+#define PARAMETERS_MAX_SIZE 4 	// bytes
 
 enum MotorsPorts { A = 0, B, C, D };
 enum SensorsPorts { INPUT_1 = 0, INPUT_2, INPUT_3, INPUT_4 };
@@ -36,6 +39,13 @@ byte updateParameters(byte* parametersArray);
 boolean blockInit();
 byte readParameters(byte* parametersArray);
 
+// To define a new block:
+// BLOCK_ID : block id in hexadecimal
+// BLOCK_SIZE : number of bits required to send parameters, 
+//				use VARIABLE_SIZE to indicate variable length
+// BLOCK_TYPE : block type (c, stack, hat, end)
+
+#define VARIABLE_SIZE -1
 
 #ifdef c_end
 	#define BLOCK_ID 0x0
@@ -96,6 +106,12 @@ byte readParameters(byte* parametersArray);
 	#define BLOCK_SIZE 8
 	#define BLOCK_TYPE "c"
 #endif // c_repeat
+
+#ifdef c_if
+	#define BLOCK_ID 0x39
+	#define BLOCK_SIZE VARIABLE_SIZE
+	#define BLOCK_TYPE "c"
+#endif // c_if
 
 #ifdef c_else
 	#define BLOCK_ID 0x7F
