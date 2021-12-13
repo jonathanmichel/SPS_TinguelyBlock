@@ -17,7 +17,7 @@
 
 #ifdef b_distance
 	#define BOOLEAN_ID 0x41
-	#define BOOLEAN_SIZE 13
+	#define BOOLEAN_SIZE 14
 #endif // b_distance
 
 
