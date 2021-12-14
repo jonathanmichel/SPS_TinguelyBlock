@@ -6,7 +6,6 @@
 
 #define TX_INTERVAL 1000	// ms, period to send frame
 
-boolean childrenCodeFound = false;
 unsigned long lastMs;
 
 #define CHILDREN_DATA_SIZE 255 		// bytes

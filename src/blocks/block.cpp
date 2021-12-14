@@ -33,7 +33,6 @@ byte updateParameters(byte* parametersArray) {
         if(BLOCK_SIZE > 0) {
             parametersBytesRequired = (unsigned int)((BLOCK_SIZE - 1)/8) + 1;
         }
-        INFO_PRINTLN("Coucou");
         if(parametersBytesRequired != parametersBytesUsed) {
             FATAL_PRINT("Check readParameters() implementation for block 0x");
             FATAL_PRINT(BLOCK_ID, HEX);
