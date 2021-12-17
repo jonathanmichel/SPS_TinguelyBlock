@@ -19,7 +19,7 @@ p = port [2 bits]
 byte readParameters(byte* parametersArray) {
 	byte port = MotorsPorts::A;
 
-	parametersArray[0] = port & 0b11;;
+	parametersArray[0] = (port & 0b11) << 6;
 
 	INFO_PRINT("motors_stop port: ");
 	INFO_PRINTLN(port);
