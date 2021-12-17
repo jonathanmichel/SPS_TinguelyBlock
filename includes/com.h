@@ -15,11 +15,14 @@ void sendChar(char data);
 void sendHeader();
 void sendTail();
 
-int processRx();
+int processCodeRx();
+void processDebugSerial();
 
 void sendData(byte* array, int size);
 boolean copyRxData(byte* destArray, int size);
 
 byte getHexAscii(char hex);
+
+void invertPortListening();
 
 #endif // COM_H

@@ -39,15 +39,16 @@ void loop() {
 	// Read rx and process frame
 	// 0 is returned is not frame is read from children,
 	// otherwise, the children data size is returned
-	int dataRead = processRx();
+	int codeDataRead = processCodeRx();
+	processDebugSerial();
 
 	// If the process function returns that it has read a complete frame from the children block
 	// Save the received data to sent them next time
-	if(dataRead > 0) {
+	if(codeDataRead > 0) {
 		// For safety we check that data length is not bigger that our local buffer
-		if(dataRead <= CHILDREN_DATA_SIZE) {
-			if(copyRxData(childrenData, dataRead)) {
-				childrenDataSize = dataRead;
+		if(codeDataRead <= CHILDREN_DATA_SIZE) {
+			if(copyRxData(childrenData, codeDataRead)) {
+				childrenDataSize = codeDataRead;
 			}
 		} else  {
 			ERROR_PRINTLN("ChildrenData array too small to store children code");
@@ -84,5 +85,8 @@ void loop() {
 
 		DEBUG_PRINTLN("-----");
 
+		// Invert port listening each second
+		// Code serial to debug serial
+		// invertPortListening();
 	} 
 }

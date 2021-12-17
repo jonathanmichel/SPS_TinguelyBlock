@@ -5,17 +5,28 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
-const byte txPin = 2;
-const byte rxPin = 3;
+const byte codeSerialTxPin = 2;
+const byte codeSerialRxPin = 3;
+const byte debugSerialTxPin = 4;
+const byte debugSerialRxPin = 5;
 
-SoftwareSerial softwareSerial(rxPin, txPin);
+// Use for "up" communication to receive code from the lower block 
+// and sent it to the upper one
+SoftwareSerial codeSerial(codeSerialRxPin, codeSerialTxPin);  
+// Used for "down" communication to receive debug counter from 
+// the upper block and send it to the lower one
+SoftwareSerial debugSerial(debugSerialRxPin, debugSerialTxPin); 
+
 
 byte rxBuffer[RX_BUFFER_SIZE];  // rx buffer for code received from other blocks
 int rxCtn;      // incremented to fill childrenData
 int binaryCtn;  // decremented to count data to receive
 
 void comInit() {
-    softwareSerial.begin(9600);              // initialize UART with baud rate of 9600
+    debugSerial.begin(9600);    // initialize debug serial with baud rate of 9600
+    codeSerial.begin(9600);     // initialize code serial with baud rate of 9600
+    codeSerial.listen();
+    pinMode(LED_BUILTIN, OUTPUT);   // set led built in output as output
     // Initialize counters
     rxCtn = 0;
     binaryCtn = 0;
@@ -37,7 +48,7 @@ void sendByte(byte data) {
     INFO_PRINTLN(data, HEX);
     // Do not use Serial.print() because it converts 
     // data to its representation as characters
-    softwareSerial.write(data);
+    codeSerial.write(data);
 }
 
 // Convert char as ASCII byte value
@@ -62,15 +73,15 @@ void sendData(byte* array, int size) {
     }
 }
 
-int processRx() {
-    int res = softwareSerial.available();
+int processCodeRx() {
+    int res = codeSerial.available();
     if(res == 0) {
         // no data
     } else if (res == -1) {
         // serial unavailable
         FATAL_PRINTLN("Serial unavailable");
     } else {
-        byte receivedData = softwareSerial.read();
+        byte receivedData = codeSerial.read();
 
         // If binaryCtn is not 0, we are currently receiving data ...
         if(binaryCtn > 0) { 
@@ -129,6 +140,30 @@ int processRx() {
     return 0;
 }
 
+void processDebugSerial() {
+    int res = debugSerial.available();
+    if(res == 0) {
+        // no data
+        INFO_PRINTLN("Debug serial - No data");
+    } else if (res == -1) {
+        // serial unavailable
+        FATAL_PRINTLN("Debug serial unavailable");
+    } else {
+        byte serialDebugCounter = debugSerial.read();
+        if (serialDebugCounter == 0) {
+            // If current block receives "0", it turns it built-in led on
+            INFO_PRINTLN("Debug serial - Current block is addressed");
+            digitalWrite(LED_BUILTIN, HIGH);
+        } else {
+            // otherwise, debug counter is decremented and sent to the lower block
+            INFO_PRINT("Debug serial - Send to lower block: ")
+            INFO_PRINTLN(serialDebugCounter - 1)
+            digitalWrite(LED_BUILTIN, LOW);
+            debugSerial.write(serialDebugCounter - 1);
+        }
+    }
+}
+
 boolean copyRxData(byte* destArray, int size) {
     if(size > RX_BUFFER_SIZE) {
         ERROR_PRINTLN("Unable to copy rx data, not enough data in RxBuffer");
@@ -139,4 +174,12 @@ boolean copyRxData(byte* destArray, int size) {
         return true;
     }
     return false;
+}
+
+void invertPortListening() {
+    if(debugSerial.isListening()) {
+        codeSerial.listen();
+    } else {
+        debugSerial.listen();
+    }
 }
