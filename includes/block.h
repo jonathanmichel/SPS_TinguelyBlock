@@ -18,9 +18,11 @@
 #define c_repeat_until
 #define c_if
 #define c_else
+#define set_trap_door
+#define start_crawler
 //*/
 
-#define c_if
+#define start_crawler
 
 #define PARAMETERS_MAX_SIZE 4 	// bytes
 
@@ -32,6 +34,7 @@ enum Operator { equal = 0, greater, less };
 enum MotorsUnit { rotations = 0, degrees, seconds };
 enum DistanceUnit { cm = 0, inches };
 enum Sign { positive = 0, negative };
+enum TrapDoorState { close = 0, open};
 
 boolean blockInitGlobal();
 byte updateParameters(byte* parametersArray);
@@ -126,6 +129,19 @@ byte readParameters(byte* parametersArray);
 	#define BLOCK_SIZE VARIABLE_SIZE
 	#define BLOCK_TYPE "c"
 #endif // c_if
+
+#ifdef set_trap_door
+	#define BLOCK_ID 0x64
+	#define BLOCK_SIZE 1
+	#define BLOCK_TYPE "stack"
+#endif // c_else
+
+#ifdef start_crawler
+	#define BLOCK_ID 0x65
+	#define BLOCK_SIZE 1
+	#define BLOCK_TYPE "stack"
+#endif // c_else
+
 
 #ifdef c_else
 	#define BLOCK_ID 0x7F
