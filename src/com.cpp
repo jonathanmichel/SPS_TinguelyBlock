@@ -144,10 +144,10 @@ void processDebugSerial() {
     int res = debugSerial.available();
     if(res == 0) {
         // no data
-        INFO_PRINTLN("Debug serial - No data");
+        // INFO_PRINTLN("Debug serial - No data");
     } else if (res == -1) {
         // serial unavailable
-        FATAL_PRINTLN("Debug serial unavailable");
+        //FATAL_PRINTLN("Debug serial unavailable");
     } else {
         byte serialDebugCounter = debugSerial.read();
         if (serialDebugCounter == 0) {
