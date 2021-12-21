@@ -27,7 +27,7 @@ s = state [1 bits]
 byte readParameters(byte* parametersArray) {
 	byte state = TrapDoorState::open;
 
-    state = digitalRead(11);
+    //state = digitalRead(11);
 
 	parametersArray[0] = (state & 0b1) << 7;
 

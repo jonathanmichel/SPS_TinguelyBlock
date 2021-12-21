@@ -4,6 +4,16 @@
 #ifdef start_crawler
 
 boolean blockInit() {
+	// D10 and D12 provide VCC and GND
+	// D11 read value from the switch
+	// Switch connection: middle pin -> D11, left and right pins -> D10 and D12
+	pinMode(10, OUTPUT);
+  	pinMode(11, INPUT);
+	pinMode(12, OUTPUT);
+
+	digitalWrite(10, LOW);
+	digitalWrite(12, HIGH);
+
 	INFO_PRINTLN("set_crawler block init");
 	return true;
 }
@@ -15,7 +25,9 @@ s = state [1 bits]
 	1: open
 */
 byte readParameters(byte* parametersArray) {
-	byte direction = TrapDoorState::open;
+	byte direction = Direction::clockwise;
+
+    direction = digitalRead(11);
 
 	parametersArray[0] = (direction & 0b1) << 7;
 
