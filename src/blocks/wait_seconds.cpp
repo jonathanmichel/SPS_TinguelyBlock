@@ -12,6 +12,7 @@ boolean blockInit() {
   	pinMode(A0, INPUT);
 	pinMode(12, OUTPUT);
 
+
 	digitalWrite(10, LOW);
 
 	digitalWrite(10, LOW);
@@ -27,12 +28,24 @@ s = seconds [8 bits]
 */
 byte readParameters(byte* parametersArray) {
 	int val = analogRead(A0);  	// Read analog value
-	// 10 bits ADC - Max value is 1023
-	// shit 5 times (/32) to have a range between 0 and 32 seconds
-	byte seconds = val >> 5;
+	// 10 bits ADC - Max value is 1023, NOT LINEAR !
+	// limit for seconds value from 1 to 10
+	int limit[] = { 732, 918, 977, 986, 994, 998, 1003, 1005, 1008, 1017 };
+
+	int currentLimit;
+	for (currentLimit = 0; currentLimit < 10; currentLimit ++) {
+		if (val >= limit[currentLimit] ) {
+			continue;
+		} else {
+			break;
+		}
+	}
+
+	Serial.print("Value is ");
+  	Serial.println(val);
 
 	Serial.print("Delay is ");
-  	Serial.print(seconds);
+  	Serial.print(currentLimit);
 	Serial.println(" second(s)");
 
 	// send 8 bytes
