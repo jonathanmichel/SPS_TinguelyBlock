@@ -40,7 +40,7 @@ void loop() {
 	// 0 is returned is not frame is read from children,
 	// otherwise, the children data size is returned
 	int codeDataRead = processCodeRx();
-	processDebugSerial();
+	//processDebugSerial();
 
 	// If the process function returns that it has read a complete frame from the children block
 	// Save the received data to sent them next time

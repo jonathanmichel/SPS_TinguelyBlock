@@ -49,7 +49,7 @@ byte readParameters(byte* parametersArray) {
 	Serial.println(" second(s)");
 
 	// send 8 bytes
-	parametersArray[0] = seconds;
+	parametersArray[0] = currentLimit;
 	// no padding required
 	
 	return 1; // parameters use 1 byte

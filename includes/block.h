@@ -22,7 +22,7 @@
 #define start_crawler
 //*/
 
-#define start_crawler
+#define set_trap_door
 
 #define PARAMETERS_MAX_SIZE 4 	// bytes
 
