@@ -10,21 +10,20 @@
 
 #define b_distance
 
-#ifdef b_touch
-	#define BOOLEAN_ID 0x43
-	#define BOOLEAN_SIZE 2
-#endif // b_touch
-
 #ifdef b_distance
 	#define BOOLEAN_ID 0x41
-	#define BOOLEAN_SIZE 14
+	#define BOOLEAN_SIZE 6
 #endif // b_distance
 
+#ifdef b_touch
+	#define BOOLEAN_ID 0x43
+	#define BOOLEAN_SIZE 1
+#endif // b_touch
 
-byte updateBoolean(byte* parametersArray);
+byte updateBoolean(char* parametersArray);
 
 // For each boolean block, the above functin has to  
 // be implemented
-byte readBoolean(byte* parametersArray);
+byte readBoolean(char* parametersArray);
 
 #endif // BOOLEAN_H

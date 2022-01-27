@@ -18,59 +18,78 @@ SoftwareSerial codeSerial(codeSerialRxPin, codeSerialTxPin);
 SoftwareSerial debugSerial(debugSerialRxPin, debugSerialTxPin); 
 
 
-byte rxBuffer[RX_BUFFER_SIZE];  // rx buffer for code received from other blocks
-int rxCtn;      // incremented to fill childrenData
-int binaryCtn;  // decremented to count data to receive
+byte rxBuffer[BUFFER_SIZE];  // rx buffer for code received from lowers blocks
+byte txBuffer[BUFFER_SIZE];  // tx buffer for code to send to the upper block
+int rxCtn;      // incremented to fill rxBuffer
+int txCtn;      // increment to fill txBuffer
+boolean readingFrame;  // indicates if we are reading a frame or not
 
 void comInit() {
-    debugSerial.begin(9600);    // initialize debug serial with baud rate of 9600
+    // debugSerial.begin(9600);    // initialize debug serial with baud rate of 9600
     codeSerial.begin(9600);     // initialize code serial with baud rate of 9600
     codeSerial.listen();
     pinMode(LED_BUILTIN, OUTPUT);   // set led built in output as output
     // Initialize counters
     rxCtn = 0;
-    binaryCtn = 0;
+    txCtn = 0;
+    // Wait for frame a to read
+    readingFrame = false;
 }
 
-byte getHexAscii(char hex) {
-    // Convert 0 to '0' (48), 8 (a) to 'A' (65), ...
-    hex = hex & 0x0F;
-    if(hex >= 9) {      // 10 to 16: 'A' to 'F'
-        return 'A' + (hex - 'A');
-    } else {            // 0 to 9: '0' to '9'
-        return '0' + hex;
+void resetFrame() {
+    txCtn = 0;
+}
+
+boolean addHeader() {
+    return addChar(START_SYMBOL);
+}
+
+boolean addTail() {
+    return addChar(END_SYMBOL);
+}
+
+boolean addChar(char data) {
+    // Clear buffer if too big
+    if (txCtn >= BUFFER_SIZE) {
+        ERROR_PRINTLN("TxBuffer full !");
+        txCtn = 0;
+        return false;
     }
+    // ... fill buffer otherwise
+    txBuffer[txCtn] = data;
+    txCtn++;
+    return true;
 }
 
-// Send raw data as byte
-void sendByte(byte data) {
-    INFO_PRINT("0x");
-    INFO_PRINTLN(data, HEX);
-    // Do not use Serial.print() because it converts 
-    // data to its representation as characters
-    codeSerial.write(data);
-}
-
-// Convert char as ASCII byte value
-void sendChar(char data) {
-    sendByte(getHexAscii(data));
-}
-
-void sendHeader() {
-    sendByte(START_HEAD);
-}
-
-void sendTail() {
-    sendByte(END_TRANSMISSION);
-}
-
-void sendData(byte* array, int size) {
-    DEBUG_PRINT("-- Send raw data ");
-    DEBUG_PRINT(size);
-    DEBUG_PRINTLN(" byte(s):");
+boolean addString(char* array, byte size) {
     for(int i = 0; i < size; i++) {
-        sendByte(array[i]);
+        if(addChar(array[i]) == false) {
+            break;
+        }
     }
+}
+
+void sendFrame() {
+    if(txCtn >= BUFFER_SIZE) {
+        ERROR_PRINT("Unable to send frame, txCtn (");
+        ERROR_PRINT(txCtn);
+        ERROR_PRINT(") is bigger than BUFFER_SIZE (");
+        ERROR_PRINTLN(BUFFER_SIZE);
+    }
+
+    INFO_PRINT("Send frame (");
+    INFO_PRINT(txCtn - 1);  // txCtn is incremented when the last char has been added
+    INFO_PRINT(" chars long): ");
+    for(int i = 0; i < txCtn; i++) {
+        Serial.write(txBuffer[i]);
+        codeSerial.write(txBuffer[i]);
+    }
+    INFO_PRINTLN("");
+
+}
+
+int readCodeRx() {
+    return 0;
 }
 
 int processCodeRx() {
@@ -81,59 +100,24 @@ int processCodeRx() {
         // serial unavailable
         FATAL_PRINTLN("Serial unavailable");
     } else {
-        byte receivedData = codeSerial.read();
+        char receivedData = codeSerial.read();
 
-        // If binaryCtn is not 0, we are currently receiving data ...
-        if(binaryCtn > 0) { 
-            // ... so we fill the array
-            rxBuffer[rxCtn++] = receivedData;
-            // ... and decrement binaryCtn 
-            binaryCtn--;
-
-            // Print receivedData in hex with 2 digits
-            DEBUG_PRINT("Rx: ");
-            DEBUG_PRINT(receivedData < 16 ? "0" : "");
-            DEBUG_PRINTLN(receivedData, HEX);
-
-            if(rxCtn == RX_BUFFER_SIZE) {
-                ERROR_PRINTLN("rxBuffer full");
-                binaryCtn = 0;
-                // @todo possible bug if EOT is not checked below !
-            }
-
-            if(binaryCtn == 0) {
-                DEBUG_PRINT("Full frame received: ");
-                DEBUG_PRINTLN(rxCtn);
-
-                return rxCtn;
-
-                /*/ @Todo - Read and check EOT
-                if(receivedData == END_TRANSMISSION) {
-                    // ... and save the received frame
-                    Serial.print("Full frame received: ");
-                    Serial.println(rxCtn);
-                } else {
-                    // ... or discard it otherwise
-                    Serial.println("Incorrect frame received");
-                    binaryCtn = 0;
-                }
-                //*/
-            }
-        } else if (binaryCtn == -1) { // current byte is supposed to be frame length (0-255)
-            binaryCtn = receivedData;
-            if (binaryCtn > RX_BUFFER_SIZE) {
-                ERROR_PRINTLN("Frame is too big for current rxBuffer");
-                binaryCtn = 0;
-            } else {
-                DEBUG_PRINT("Start reading frame: ");
-                DEBUG_PRINTLN(binaryCtn);
-            }
-        } else if (receivedData == START_HEAD) {  // If we are not receiving new data, we wait SOH
-            // Once SOH is received, the next byte indicates the data length
-            // By changing binaryCtn, we activate binary receiving. Next step will be to read frame length
-            binaryCtn = -1; 
+        // If the start symbol is received, start frame reading
+        if(receivedData == START_SYMBOL) {
+            readingFrame = true;
             rxCtn = 0;
-            // Serial.println("Begin of frame detected");
+        } else if (readingFrame == true) {  // If we are reading frame
+            // If the end symbol is received, frame is completed
+            if(receivedData == END_SYMBOL) {
+                return rxCtn;
+            } else if (rxCtn == BUFFER_SIZE) {  // if the buffer is full (we missed the end symbol ?)
+                // we reset frame reading
+                readingFrame = false;
+                rxCtn = 0;
+            } else { // if not, we simply store data
+                rxBuffer[rxCtn] = receivedData;
+                rxCtn++;
+            }
         }
     }
 
@@ -164,22 +148,15 @@ void processDebugSerial() {
     }
 }
 
-boolean copyRxData(byte* destArray, int size) {
-    if(size > RX_BUFFER_SIZE) {
+boolean copyRxData(char* destArray, int size) {
+    if(size > BUFFER_SIZE) {
         ERROR_PRINTLN("Unable to copy rx data, not enough data in RxBuffer");
     } else {
         for(int i = 0; i < size; i ++) {
-            destArray[i] = rxBuffer[i];
+            // we remove the first char that is the START_SYMBOL
+            destArray[i] = rxBuffer[i + 1];
         }
         return true;
     }
     return false;
-}
-
-void invertPortListening() {
-    if(debugSerial.isListening()) {
-        codeSerial.listen();
-    } else {
-        debugSerial.listen();
-    }
 }

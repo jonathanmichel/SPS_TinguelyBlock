@@ -19,22 +19,25 @@ boolean blockInit() {
 }
 
 /* Parameters
-1 byte: [s-------]
-s = state [1 bits]
-	0: close
-	1: open
+1 char: [s]
+s = state [1 char]
+	c: close
+	o: open
 */
-byte readParameters(byte* parametersArray) {
-	byte state = TrapDoorState::open;
+byte readParameters(char* parametersArray) {
+	byte button = digitalRead(5);
 
-	state = digitalRead(5);
+	char state = 'c';	// close
+	if(button) {	// open
+		state = 'o';
+	}
 
-	parametersArray[0] = (state & 0b1) << 7;
+	INFO_PRINT("set_trap_door button: ");
+	INFO_PRINTLN(button);
 
-	INFO_PRINT("set_trap_door state: ");
-	INFO_PRINTLN(state);
+	parametersArray[0] = state;
 
-	return 1; // parameters use 1 byte
+	return 1; // parameters use 1 char
 }
 
 #endif

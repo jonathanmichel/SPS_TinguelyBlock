@@ -8,9 +8,9 @@ boolean blockInit() {
 	return true;
 }
 
-byte readParameters(byte* parametersArray) {
+byte readParameters(char* parametersArray) {
 	// h_on_start has no parameters
-	return 0; // use 0 byte
+	return 0; // use 0 char
 }
 
 #endif

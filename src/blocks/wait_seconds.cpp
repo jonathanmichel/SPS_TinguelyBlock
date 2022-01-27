@@ -22,19 +22,19 @@ boolean blockInit() {
 }
 
 /* Parameters
-1 byte: [ssssssss]
-s = seconds [8 bits]
-	0-255
+2 chars: [ss]
+s = seconds [2 chars]
+	00-99
 */
-byte readParameters(byte* parametersArray) {
+byte readParameters(char* parametersArray) {
 	int val = analogRead(A0);  	// Read analog value
 	// 10 bits ADC - Max value is 1023, NOT LINEAR !
 	// limit for seconds value from 1 to 10
 	int limit[] = { 732, 918, 977, 986, 994, 998, 1003, 1005, 1008, 1017 };
 
-	int currentLimit;
-	for (currentLimit = 0; currentLimit < 10; currentLimit ++) {
-		if (val >= limit[currentLimit] ) {
+	int limitCtn;
+	for (limitCtn = 0; limitCtn < 10; limitCtn ++) {
+		if (val >= limit[limitCtn] ) {
 			continue;
 		} else {
 			break;
@@ -45,14 +45,13 @@ byte readParameters(byte* parametersArray) {
   	Serial.println(val);
 
 	Serial.print("Delay is ");
-  	Serial.print(currentLimit);
+  	Serial.print(limitCtn);
 	Serial.println(" second(s)");
 
-	// send 8 bytes
-	parametersArray[0] = currentLimit;
-	// no padding required
+	// Convert limitCtn (seconds) has a 2 chars value representation 
+    sprintf(parametersArray, "\%02u", limitCtn);
 	
-	return 1; // parameters use 1 byte
+	return 2; // parameters use 2 chars
 }
 
 #endif

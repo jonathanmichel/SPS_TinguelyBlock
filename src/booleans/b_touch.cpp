@@ -12,7 +12,7 @@ p = ports [2 bits]
 	10: 3
 	11: 4
 */
-byte readBoolean(byte* parametersArray) {
+byte readBoolean(char* parametersArray) {
 	byte port = SensorsPorts::INPUT_2;
 
 	port &= 0b11;

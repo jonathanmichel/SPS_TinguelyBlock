@@ -9,8 +9,8 @@
 unsigned long lastMs;
 
 #define CHILDREN_DATA_SIZE 255 		// bytes
-byte childrenData[CHILDREN_DATA_SIZE];
-int childrenDataSize;
+char childrenData[CHILDREN_DATA_SIZE];
+byte childrenDataSize;
 
 void setup() {
 	debugInit();
@@ -18,7 +18,7 @@ void setup() {
 	comInit();
 
 	INFO_PRINT("Id: 0x");
-	INFO_PRINT(BLOCK_ID, HEX);
+	INFO_PRINT(BLOCK_ID);
 	INFO_PRINT(", size: ");
 	INFO_PRINT(BLOCK_SIZE);
 	INFO_PRINT(", type: ");
@@ -42,13 +42,15 @@ void loop() {
 	int codeDataRead = processCodeRx();
 	//processDebugSerial();
 
-	// If the process function returns that it has read a complete frame from the children block
-	// Save the received data to sent them next time
-	if(codeDataRead > 0) {
+	// If the process function returns that it has read a complete frame (start and end symbol + data)
+	// from the children block, save the received data to sent them next time
+	if(codeDataRead > 2) {
+		// We remove the START_SYMBOL and the END_SYMBOL from the data stored
+		codeDataRead = codeDataRead - 2;
 		// For safety we check that data length is not bigger that our local buffer
 		if(codeDataRead <= CHILDREN_DATA_SIZE) {
 			if(copyRxData(childrenData, codeDataRead)) {
-				childrenDataSize = codeDataRead;
+				childrenDataSize = codeDataRead; // start and end symbol are removed
 			}
 		} else  {
 			ERROR_PRINTLN("ChildrenData array too small to store children code");
@@ -59,20 +61,22 @@ void loop() {
 	if (millis() - lastMs > TX_INTERVAL) {
 		lastMs = millis();
 
-		byte parameters[PARAMETERS_MAX_SIZE];
+		char parameters[PARAMETERS_MAX_SIZE];
 		byte parametersLength = updateParameters(parameters);
 
-		// 1 byte for block id + parameters length
-		byte frameLength = 1 + parametersLength + childrenDataSize;
-		// Frame [SOH][frame length][... data padded ...][... children data ...][EOT]
-		sendHeader();
-		sendByte(frameLength);
-		sendByte(BLOCK_ID);
-		sendData(parameters, parametersLength);
+		// Create frame: 
+		// 'START_SYMBOL'[block id][... parameters ...]'|'[... children data ...]'END_SYMBOL'
+		resetFrame();
+		addHeader();
+		char blockId[] = BLOCK_ID;		// BLOCK_ID has to be 2 chars in block.h !
+		addChar(blockId[0]);
+		addChar(blockId[1]);
+		addString(parameters, parametersLength);
 
-		// Data from next blocs will be sent
+		/*/ Data from next blocs will be sent
 		if (childrenDataSize > 0) {
-			sendData(childrenData, childrenDataSize);
+			addChar('|');
+			addData(childrenData, childrenDataSize);
 			INFO_PRINT("Child is ");
 			INFO_PRINT(childrenDataSize);
 			INFO_PRINTLN(" byte(s) long");
@@ -80,13 +84,11 @@ void loop() {
 			INFO_PRINTLN("Current block has no child");
 		}
 		childrenDataSize = 0;
+		//*/
 
-		sendTail();
+		addTail();
 
-		DEBUG_PRINTLN("-----");
-
-		// Invert port listening each second
-		// Code serial to debug serial
-		// invertPortListening();
+		// Send frame over serial
+		sendFrame();
 	} 
 }

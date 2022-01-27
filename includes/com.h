@@ -3,26 +3,23 @@
 
 #include <Arduino.h>
 
-#define RX_BUFFER_SIZE 255 		// bytes
-// According to ASCII table
-#define START_HEAD 0x1          // [SOH]
-#define END_TRANSMISSION 0x4    // [EOT]
+#define BUFFER_SIZE 255 		// chars
+#define START_SYMBOL '#'
+#define END_SYMBOL '!'
 
 void comInit();
-void sendByte(byte data);
-void sendChar(char data);
+void resetFrame();
 
-void sendHeader();
-void sendTail();
+boolean addChar(char data);
+boolean addString(char* array, byte size);
+boolean addHeader();
+boolean addTail();
+
+void sendFrame();
 
 int processCodeRx();
 void processDebugSerial();
 
-void sendData(byte* array, int size);
-boolean copyRxData(byte* destArray, int size);
-
-byte getHexAscii(char hex);
-
-void invertPortListening();
+boolean copyRxData(char* destArray, int size);
 
 #endif // COM_H

@@ -24,7 +24,7 @@ u = unit [1 bit]
     0: cm
     1: inches
 */
-byte readBoolean(byte* parametersArray) {
+byte readBoolean(char* parametersArray) {
 	byte port = SensorsPorts::INPUT_4;
     byte oper = Operator::less;
     byte value = 75;
