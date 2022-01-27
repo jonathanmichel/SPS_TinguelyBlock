@@ -9,8 +9,10 @@
 unsigned long lastMs;
 
 #define CHILDREN_DATA_SIZE 255 		// bytes
+#define RESET_CHILDREN_CNT 5
 char childrenData[CHILDREN_DATA_SIZE];
 byte childrenDataSize;
+byte resetChildren = 0;
 
 void setup() {
 	debugInit();
@@ -77,10 +79,17 @@ void loop() {
 			INFO_PRINT("Child is ");
 			INFO_PRINT(childrenDataSize);
 			INFO_PRINTLN(" char(s) long");
+			// Keep children data for the next RESET_CHILDREN_CNT frames sent before removing it completely
+			// It allows to minimise synchronisation issues between blocks that causes fails in discovering 
+			// childrens ... not ideal ...
+			resetChildren++;
+			if(resetChildren == RESET_CHILDREN_CNT) {
+				childrenDataSize = 0;
+				resetChildren = 0;
+			}
 		} else {
 			INFO_PRINTLN("Current block has no child");
 		}
-		childrenDataSize = 0;
 		//*/
 
 		addTail();
