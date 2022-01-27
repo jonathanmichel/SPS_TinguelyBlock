@@ -61,12 +61,13 @@ boolean addChar(char data) {
     return true;
 }
 
-boolean addString(char* array, byte size) {
+boolean addChars(char* array, byte size) {
     for(int i = 0; i < size; i++) {
         if(addChar(array[i]) == false) {
-            break;
+            return false;
         }
     }
+    return true;
 }
 
 void sendFrame() {
@@ -101,7 +102,6 @@ int processCodeRx() {
         FATAL_PRINTLN("Serial unavailable");
     } else {
         char receivedData = codeSerial.read();
-
         // If the start symbol is received, start frame reading
         if(receivedData == START_SYMBOL) {
             readingFrame = true;
@@ -148,15 +148,8 @@ void processDebugSerial() {
     }
 }
 
-boolean copyRxData(char* destArray, int size) {
-    if(size > BUFFER_SIZE) {
-        ERROR_PRINTLN("Unable to copy rx data, not enough data in RxBuffer");
-    } else {
-        for(int i = 0; i < size; i ++) {
-            // we remove the first char that is the START_SYMBOL
-            destArray[i] = rxBuffer[i + 1];
-        }
-        return true;
+void copyFrameData(char* dataArray, int dataSize) {
+    for(int i = 0; i < dataSize; i ++) {
+        dataArray[i] = rxBuffer[i];
     }
-    return false;
 }

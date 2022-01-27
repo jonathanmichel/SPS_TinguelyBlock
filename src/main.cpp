@@ -4,7 +4,7 @@
 #include "../includes/com.h"
 #include "../includes/debug.h"
 
-#define TX_INTERVAL 1000	// ms, period to send frame
+#define TX_INTERVAL 200	// ms, period to send frame
 
 unsigned long lastMs;
 
@@ -39,19 +39,16 @@ void loop() {
 	// Read rx and process frame
 	// 0 is returned is not frame is read from children,
 	// otherwise, the children data size is returned
-	int codeDataRead = processCodeRx();
+	int frameSize = processCodeRx();
 	//processDebugSerial();
 
-	// If the process function returns that it has read a complete frame (start and end symbol + data)
+	// If the process function returns that it has read a complete frame (start and end symbol not included)
 	// from the children block, save the received data to sent them next time
-	if(codeDataRead > 2) {
-		// We remove the START_SYMBOL and the END_SYMBOL from the data stored
-		codeDataRead = codeDataRead - 2;
+	if(frameSize > 0) {
 		// For safety we check that data length is not bigger that our local buffer
-		if(codeDataRead <= CHILDREN_DATA_SIZE) {
-			if(copyRxData(childrenData, codeDataRead)) {
-				childrenDataSize = codeDataRead; // start and end symbol are removed
-			}
+		if(frameSize <= CHILDREN_DATA_SIZE) {
+			copyFrameData(childrenData, frameSize);
+			childrenDataSize = frameSize;
 		} else  {
 			ERROR_PRINTLN("ChildrenData array too small to store children code");
 		}
@@ -71,15 +68,15 @@ void loop() {
 		char blockId[] = BLOCK_ID;		// BLOCK_ID has to be 2 chars in block.h !
 		addChar(blockId[0]);
 		addChar(blockId[1]);
-		addString(parameters, parametersLength);
+		addChars(parameters, parametersLength);
 
-		/*/ Data from next blocs will be sent
+		// Data from the next blocks will be sent
 		if (childrenDataSize > 0) {
 			addChar('|');
-			addData(childrenData, childrenDataSize);
+			addChars(childrenData, childrenDataSize);
 			INFO_PRINT("Child is ");
 			INFO_PRINT(childrenDataSize);
-			INFO_PRINTLN(" byte(s) long");
+			INFO_PRINTLN(" char(s) long");
 		} else {
 			INFO_PRINTLN("Current block has no child");
 		}
