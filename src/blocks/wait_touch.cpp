@@ -9,6 +9,7 @@ boolean blockInit() {
 }
 
 /* Parameters
+// @ todo - Deprecated implementation, format parameters to match protocol
 1 byte: [pps-----]
 p = ports [2 bits]
 	00: 1
@@ -20,6 +21,7 @@ s = state [1 bit]
 	1: released
 */
 byte readParameters(byte* parametersArray) {
+	FATAL_PRINTLN("Deprecated implementation, please update it !");
 	byte port = SensorsPorts::INPUT_4;
 	byte state = State::released;
 

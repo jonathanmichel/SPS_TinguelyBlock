@@ -19,12 +19,14 @@ boolean blockInit() {
 }
 
 /* Parameters
+// @ todo - Deprecated implementation, format parameters to match protocol
 1 byte: [s-------]
 s = state [1 bits]
 	0: close
 	1: open
 */
 byte readParameters(byte* parametersArray) {
+	FATAL_PRINTLN("Deprecated implementation, please update it !");
 	byte direction = Direction::clockwise;
 
     direction = digitalRead(11);

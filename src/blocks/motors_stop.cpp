@@ -9,6 +9,7 @@ boolean blockInit() {
 }
 
 /* Parameters
+// @ todo - Deprecated implementation, format parameters to match protocol
 1 byte: [pp------]
 p = port [2 bits]
 	00: A
@@ -17,6 +18,7 @@ p = port [2 bits]
 	11: D
 */
 byte readParameters(byte* parametersArray) {
+	FATAL_PRINTLN("Deprecated implementation, please update it !");
 	byte port = MotorsPorts::A;
 
 	parametersArray[0] = (port & 0b11) << 6;

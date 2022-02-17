@@ -9,11 +9,13 @@ boolean blockInit() {
 }
 
 /* Parameters
+// @ todo - Deprecated implementation, format parameters to match protocol
 1 byte: [tttttttt]
 t = times [8 bits]
 	0-255
 */
 byte readParameters(byte* parametersArray) {
+	FATAL_PRINTLN("Deprecated implementation, please update it !");
 	int times = 8;
 
 	Serial.print("Repeat ");
@@ -24,7 +26,7 @@ byte readParameters(byte* parametersArray) {
 	parametersArray[0] = times;
 	// no padding required
 	
-	return 1; // parameters use 1 byte
+	return 0; // parameters use 1 byte
 }
 
 #endif

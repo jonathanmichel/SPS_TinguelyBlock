@@ -9,6 +9,7 @@ boolean blockInit() {
 }
 
 /* Parameters
+// @ todo - Deprecated implementation, format parameters to match protocol
 2 byte: [ppduuvvv][vvvvv---]
 p = port [2 bits]
 	00: A
@@ -27,6 +28,7 @@ v = value [8 bits]
 	0-255
 */
 byte readParameters(byte* parametersArray) {
+	FATAL_PRINTLN("Deprecated implementation, please update it !");
 	byte port = MotorsPorts::A;
 	byte direction = Direction::clockwise;
 	byte unit = MotorsUnit::degrees;

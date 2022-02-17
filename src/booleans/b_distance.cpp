@@ -5,6 +5,7 @@
 #ifdef b_distance
 
 /* Parameters
+// @ todo - Deprecated implementation, format parameters to match protocol
 2 bytes: [ppoovvvv][vvvvu---]
 p = ports [2 bits]
 	00: 1
@@ -25,6 +26,7 @@ u = unit [1 bit]
     1: inches
 */
 byte readBoolean(char* parametersArray) {
+	FATAL_PRINTLN("Deprecated implementation, please update it !");
 	byte port = SensorsPorts::INPUT_4;
     byte oper = Operator::less;
     byte value = 75;

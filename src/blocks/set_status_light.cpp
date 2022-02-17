@@ -20,6 +20,7 @@ boolean blockInit() {
 }
 
 /* Parameters
+// @ todo - Deprecated implementation, format parameters to match protocol
 1 byte: [ccc-----]
 c = color [3 bits]
 	000: off
@@ -32,6 +33,7 @@ c = color [3 bits]
 	111: <not supported>
 */
 byte readParameters(byte* parametersArray) {
+	FATAL_PRINTLN("Deprecated implementation, please update it !");
 	int val = digitalRead(11);
 
 	byte color = val;
