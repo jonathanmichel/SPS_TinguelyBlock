@@ -22,7 +22,7 @@
 #define start_crawler
 //*/
 
-#define wait_seconds
+#define c_if
 
 #define PARAMETERS_MAX_SIZE 16 	// bytes
 
@@ -35,6 +35,8 @@ enum Operator { equal = 0, greater, less };
 enum MotorsUnit { rotations = 0, degrees, seconds };
 enum DistanceUnit { cm = 0, inches };
 enum Sign { positive = 0, negative };
+
+char SensorsPorts_symbol[] = {'1', '2', '3', '4'};
 
 boolean blockInitGlobal();
 byte updateParameters(char* parametersArray);

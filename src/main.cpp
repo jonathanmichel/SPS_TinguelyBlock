@@ -79,9 +79,7 @@ void loop() {
 			INFO_PRINT("Child is ");
 			INFO_PRINT(childrenDataSize);
 			INFO_PRINTLN(" char(s) long");
-			// Keep children data for the next RESET_CHILDREN_CNT frames sent before removing it completely
-			// It allows to minimise synchronisation issues between blocks that causes fails in discovering 
-			// childrens ... not ideal ...
+			// Keep children data for the next RESET_CHILDREN_CNT frames sent before removing it completely. It allows to minimise synchronisation issues between blocks that causes fails in discovering childrens ... not ideal ... @todo Improve
 			resetChildren++;
 			if(resetChildren == RESET_CHILDREN_CNT) {
 				childrenDataSize = 0;

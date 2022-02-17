@@ -5,24 +5,22 @@
 #ifdef b_touch
 
 /* Parameters
-1 byte: [pp------]
-p = ports [2 bits]
-	00: 1
-	01: 2
-	10: 3
-	11: 4
+1 char : [p]
+p = ports [1 char]
+	'1': Port 1
+	'2': Port 2
+	'3': Port 3
+	'4': Port 4
 */
 byte readBoolean(char* parametersArray) {
-	byte port = SensorsPorts::INPUT_2;
-
-	port &= 0b11;
-
-	parametersArray[0] = (port << 6);
+	char port = SensorsPorts_symbol[SensorsPorts::INPUT_2];
 
 	INFO_PRINT("b_touch port: ");
 	INFO_PRINTLN(port);
 
-	return 1; // parameters use 1 byte
+	parametersArray[0] = port;
+
+	return 1; // parameters use 1 char
 }
 
 #endif // b_touch

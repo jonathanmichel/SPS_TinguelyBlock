@@ -10,9 +10,9 @@ boolean blockInit() {
 }
 
 /* Parameters
-1 byte + x: [ssssssss][bbbbbbbb][...]
-s = boolean size [ 8 bits]
-b = boolean [x bytes]
+1 + x chars: [sb...]
+s = char representing the boolean size in hex [1 char]
+b = boolean [x chars]
 	binary value
 */
 byte readParameters(byte* parametersArray) {
